@@ -3,7 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-<dependencies>
+    <packaging>pom</packaging>
+    <modules>
+        <module>service-email</module>
+        <module>service-fraud-detector</module>
+        <module>service-log</module>
+        <module>service-new-order</module>
+        <module>common-kafka</module>
+    </modules>
+    <dependencies>
     <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
     <dependency>
         <groupId>org.apache.kafka</groupId>
