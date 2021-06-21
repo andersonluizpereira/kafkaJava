@@ -20,21 +20,22 @@ public class CreateUserService {
     }
 
     public static void main(String[] args) throws SQLException {
-    var createUserService = new CreateUserService();
+        var createUserService = new CreateUserService();
         try (var service = new KafkaService<>(CreateUserService.class.getSimpleName(),
-            "ECOMMERCE_NEW_ORDER",
+                "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
-            Order.class,
-            Map.of())) {
-        service.run();
+                Order.class,
+                Map.of())) {
+            service.run();
+        }
     }
-}
+
     private void parse(ConsumerRecord<String, Order> record) throws SQLException {
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for new user");
         System.out.println(record.value());
         var order = record.value();
-        if (isNewUser(order.getMail())){
+        if (isNewUser(order.getMail())) {
             insertNewUser(order.getMail());
         }
     }
@@ -45,7 +46,7 @@ public class CreateUserService {
         insert.setString(1, "uuid");
         insert.setString(2, email);
         insert.execute();
-        System.out.println("Usuário uuid e "+ email +" adicionado.");
+        System.out.println("Usuário uuid e " + email + " adicionado.");
     }
 
     private boolean isNewUser(String email) throws SQLException {
