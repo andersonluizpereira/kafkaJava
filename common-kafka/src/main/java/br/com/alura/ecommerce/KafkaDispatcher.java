@@ -23,6 +23,8 @@ class KafkaDispatcher<T> implements Closeable {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "host.docker.internal:9094");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName());
+        //Com esta configuração em all todos os tópicos vao ter essas informações.
+        //properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
         return properties;
     }
 
