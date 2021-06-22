@@ -7,16 +7,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class CreateUserService {
+class CreateUserService {
 
     private final Connection connection;
 
-    public CreateUserService() throws SQLException {
+    CreateUserService() throws SQLException {
         String url = "jdbc:sqlite:target/users_database.db";
         connection = DriverManager.getConnection(url);
-        connection.createStatement().execute("create table if not exists Users (" +
-                "uuid varchar(200) primary key," +
-                "email varchar(200))");
+        try {
+            connection.createStatement().execute("create table Users (" +
+                    "uuid varchar(200) primary key," +
+                    "email varchar(200))");
+        } catch(SQLException ex) {
+            // be careful, the sql could be wrong, be reallllly careful
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws SQLException {
@@ -35,17 +40,18 @@ public class CreateUserService {
         System.out.println("Processing new order, checking for new user");
         System.out.println(record.value());
         var order = record.value();
-        if (isNewUser(order.getMail())) {
-            insertNewUser(order.getUserId(), order.getMail());
+        if(isNewUser(order.getEmail())) {
+            insertNewUser(order.getUserId(), order.getEmail());
         }
     }
 
     private void insertNewUser(String uuid, String email) throws SQLException {
-        var insert = connection.prepareStatement("insert into Users(uuid, email) values (?,?)");
+        var insert = connection.prepareStatement("insert into Users (uuid, email) " +
+                "values (?,?)");
         insert.setString(1, uuid);
         insert.setString(2, email);
         insert.execute();
-        System.out.println("Usuário uuid e " + email + " adicionado.");
+        System.out.println("Usuário uuid e " + email + " adicionado");
     }
 
     private boolean isNewUser(String email) throws SQLException {
@@ -55,4 +61,5 @@ public class CreateUserService {
         var results = exists.executeQuery();
         return !results.next();
     }
+
 }

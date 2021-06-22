@@ -19,7 +19,7 @@ public class Order {
         return userId;
     }
 
-    public String getMail() {
+    public String getEmail() {
         return email;
     }
 }
