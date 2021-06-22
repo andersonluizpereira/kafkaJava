@@ -36,14 +36,13 @@ public class CreateUserService {
         System.out.println(record.value());
         var order = record.value();
         if (isNewUser(order.getMail())) {
-            insertNewUser(order.getMail());
+            insertNewUser(order.getUserId(), order.getMail());
         }
     }
 
-    private void insertNewUser(String email) throws SQLException {
-        var insert = connection.prepareStatement("insert into Users(uuid, email) +" +
-                "values (?,?)");
-        insert.setString(1, "uuid");
+    private void insertNewUser(String uuid, String email) throws SQLException {
+        var insert = connection.prepareStatement("insert into Users(uuid, email) values (?,?)");
+        insert.setString(1, uuid);
         insert.setString(2, email);
         insert.execute();
         System.out.println("Usuário uuid e " + email + " adicionado.");
