@@ -21,7 +21,7 @@ public class BatchSendMessageService {
             connection.createStatement().execute("create table Users (" +
                     "uuid varchar(200) primary key," +
                     "email varchar(200))");
-        } catch (SQLException ex) {
+        } catch(SQLException ex) {
             // be careful, the sql could be wrong, be reallllly careful
             ex.printStackTrace();
         }
@@ -30,9 +30,8 @@ public class BatchSendMessageService {
     public static void main(String[] args) throws SQLException {
         var batchService = new BatchSendMessageService();
         try (var service = new KafkaService<>(BatchSendMessageService.class.getSimpleName(),
-                "SEND_MESSAGE_TO_ALL_USERS",
+                "ECOMMERCE_SEND_MESSAGE_TO_ALL_USERS",
                 batchService::parse,
-                String.class,
                 Map.of())) {
             service.run();
         }
@@ -40,20 +39,23 @@ public class BatchSendMessageService {
 
     private final KafkaDispatcher<User> userDispatcher = new KafkaDispatcher<>();
 
-    private void parse(ConsumerRecord<String, String> record) throws SQLException, ExecutionException, InterruptedException {
+    private void parse(ConsumerRecord<String, Message<String>> record) throws SQLException, ExecutionException, InterruptedException {
         System.out.println("------------------------------------------");
         System.out.println("Processing new batch");
-        System.out.println("Topic: " + record.value());
+        var message = record.value();
+        System.out.println("Topic: " + message.getPayload());
 
-        for (User user : getAllUsers()) {
-            userDispatcher.send(record.value(), user.getUuid(), user);
+        for(User user : getAllUsers()) {
+            userDispatcher.send(message.getPayload(), user.getUuid(),
+                    message.getId().continueWith(BatchSendMessageService.class.getSimpleName()),
+                    user);
         }
     }
 
     private List<User> getAllUsers() throws SQLException {
         var results = connection.prepareStatement("select uuid from Users").executeQuery();
         List<User> users = new ArrayList<>();
-        while (results.next()) {
+        while(results.next()) {
             users.add(new User(results.getString(1)));
         }
         return users;
