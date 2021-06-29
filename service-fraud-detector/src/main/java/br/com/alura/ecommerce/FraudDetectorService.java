@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 
 public class FraudDetectorService {
 
+    private final KafkaDispatcher<Order> orderDispatcher = new KafkaDispatcher<>();
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var fraudService = new FraudDetectorService();
         try (var service = new KafkaService<>(FraudDetectorService.class.getSimpleName(),
@@ -19,8 +21,6 @@ public class FraudDetectorService {
             service.run();
         }
     }
-
-    private final KafkaDispatcher<Order> orderDispatcher = new KafkaDispatcher<>();
 
     private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("------------------------------------------");
@@ -38,7 +38,7 @@ public class FraudDetectorService {
             e.printStackTrace();
         }
         var order = message.getPayload();
-        if(isFraud(order)) {
+        if (isFraud(order)) {
             // pretending that the fraud happens when the amount is >= 4500
             System.out.println("Order is a fraud!!!!!" + order);
             orderDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(),
