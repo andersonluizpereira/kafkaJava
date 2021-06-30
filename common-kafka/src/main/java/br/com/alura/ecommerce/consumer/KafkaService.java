@@ -30,7 +30,7 @@ public class KafkaService<T> implements Closeable {
         consumer.subscribe(topic);
     }
 
-    private KafkaService(ConsumerFunction parse, String groupId, Map<String, String> properties) {
+    private KafkaService(ConsumerFunction<T> parse, String groupId, Map<String, String> properties) {
         this.parse = parse;
         this.consumer = new KafkaConsumer<>(getProperties(groupId, properties));
     }
@@ -55,6 +55,7 @@ public class KafkaService<T> implements Closeable {
                 }
             }
         }
+
     }
 
     private Properties getProperties(String groupId, Map<String, String> overrideProperties) {
@@ -65,6 +66,7 @@ public class KafkaService<T> implements Closeable {
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         properties.putAll(overrideProperties);
         return properties;
     }

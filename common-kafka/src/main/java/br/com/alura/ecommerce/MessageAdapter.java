@@ -17,7 +17,7 @@ public class MessageAdapter implements JsonSerializer<Message>, JsonDeserializer
     @Override
     public Message deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
         var obj = jsonElement.getAsJsonObject();
-        var payloadType = obj.get("type").getAsString();
+        var payloadType =  obj.get("type").getAsString();
         var correlationId = (CorrelationId) context.deserialize(obj.get("correlationId"), CorrelationId.class);
         try {
             // maybe you want to use a "accept list"
