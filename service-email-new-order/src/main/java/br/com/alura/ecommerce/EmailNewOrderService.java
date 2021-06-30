@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutionException;
 
 public class EmailNewOrderService {
 
+    private final KafkaDispatcher<String> emailDispatcher = new KafkaDispatcher<>();
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var emailService = new EmailNewOrderService();
         try (var service = new KafkaService<>(EmailNewOrderService.class.getSimpleName(),
@@ -18,8 +20,6 @@ public class EmailNewOrderService {
             service.run();
         }
     }
-
-    private final KafkaDispatcher<String> emailDispatcher = new KafkaDispatcher<>();
 
     private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("------------------------------------------");

@@ -21,7 +21,7 @@ public class CreateUserService {
             connection.createStatement().execute("create table Users (" +
                     "uuid varchar(200) primary key," +
                     "email varchar(200))");
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             // be careful, the sql could be wrong, be reallllly careful
             ex.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class CreateUserService {
         System.out.println("Processing new order, checking for new user");
         System.out.println(record.value());
         var order = record.value().getPayload();
-        if(isNewUser(order.getEmail())) {
+        if (isNewUser(order.getEmail())) {
             insertNewUser(order.getEmail());
         }
     }
