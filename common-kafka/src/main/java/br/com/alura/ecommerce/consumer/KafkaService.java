@@ -1,8 +1,8 @@
 package br.com.alura.ecommerce.consumer;
 
 import br.com.alura.ecommerce.Message;
-import br.com.alura.ecommerce.dispatcher.GsonSerializer;
 import br.com.alura.ecommerce.dispatcher.KafkaDispatcher;
+import br.com.alura.ecommerce.dispatcher.GsonSerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
